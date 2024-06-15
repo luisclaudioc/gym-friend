@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Gymbo Workout Create</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="client/public/style.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <header>
+            <h1>GYMBO</h1>
+        </header>
+        <h1>Almost there...</h1>
+        <h2>Start by adding your exercises:</h2>
+        <form id="workout-form">
+            <div class="exercise-cont">
+                <div class="complete-exercise" id="complete-exercise-0">
+                    <div>
+                        <label for="day-0">Day:</label>
+                        <select id="day-0" name="day" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                        <label for="group-0">Muscle group:</label>
+                        <input id="group-0" name="group" type="text" required />
+                    </div>
+                    <div>
+                        <label for="exercise-0">Exercise:</label>
+                        <input id="exercise-0" name="exercise" type="text" required />
+                    </div>
+                    <div>
+                        <label for="sets-0">Sets:</label>
+                        <input id="sets-0" name="sets" type="number" required />
+                        <label for="repetitions-0">Repetitions:</label>
+                        <input id="repetitions-0" name="repetitions" type="number" required />
+                        <label for="weight-0">Weight:</label>
+                        <input id="weight-0" name="weight" type="number" />
+                    </div>
+                    <div>
+                        <label for="obs-0">Obs:</label>
+                        <input id="obs-0" name="obs" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="center">
+                <input class="submit-btn" type="submit" value="Add exercise" />
+                <a class="a-btn" id="done" class="link" href="#">Back</a>
+            </div>
+        </form>
+
+    </div>
+    <footer class="footer">
+        <p>Made by <a class="contact" href="https://github.com/luisclaudioc">@luiscostantin</a></p>
+    </footer>
+
+    <script type="module">
+        import { newExercise } from '/client/services/api.js'
+        
+        // Get user ID from query
+        const userId = window.location.search.split('&')[0].split('=')[1];
+        
+        // Connect done tag to profile page with query
+        document.getElementById('done').setAttribute('href', `/profile?user=${userId}`)
+        
+        // Get elements from HTML 
+        const form = document.getElementById('workout-form');
+        const exerciseContainer = document.querySelector('.exercise-cont');
+
+        // Submit function
+        let count = 0
+        const exerciseSubmit = async (e) => {
+            try {
+                e.preventDefault();
+
+                // Get all the data from input line and save it
+                const inputElements = [document.querySelector(`#complete-exercise-${count} select`),
+                    ...document.querySelectorAll(`#complete-exercise-${count} input`)];
+                let userData = {}
+                inputElements.forEach((item) => {
+                    userData[item.name] = item.value;
+                    item.disabled = true;
+                });
+                await newExercise(userId, userData);
+                
+                // New input line
+                count++;
+                const nextExercise = document.createElement('div');
+                nextExercise.id = `complete-exercise-${count}`
+                nextExercise.classList.add("complete-exercise")
+                nextExercise.innerHTML = `
+                    <div>
+                        <label for="day-${count}">Day:</label>
+                        <select id="day-${count}" name="day" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                        <label for="group-${count}">Muscle group:</label>
+                        <input id="group-${count}" name="group" type="text" required />
+                    </div>
+                    <div>
+                        <label for="exercise-${count}">Exercise:</label>
+                        <input id="exercise-${count}" name="exercise" type="text" required />
+                    </div>
+                    <div>
+                        <label for="sets-${count}">Sets:</label>
+                        <input id="sets-${count}" name="sets" type="number" required />
+                        <label for="repetitions-${count}">Repetitions:</label>
+                        <input id="repetitions-${count}" name="repetitions" type="number" required />
+                        <label for="weight-${count}">Weight:</label>
+                        <input id="weight-${count}" name="weight" type="number" />
+                    </div>
+                    <div>
+                        <label for="obs-${count}">Obs:</label>
+                        <input id="obs-${count}" name="obs" type="text" />
+                    </div>
+                `
+                exerciseContainer.appendChild(nextExercise);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        form.addEventListener('submit', exerciseSubmit);
+    </script>
+
+</body>
+
+</html>

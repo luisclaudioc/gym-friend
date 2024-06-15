@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Gymbo Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="client/public/style.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <header>
+            <h1>GYMBO</h1>
+        </header>
+        
+        <h1>Let's work out!</h1>
+        <h2>Here is your training:</h2>
+        <a class="logout link" href="/">Log Out</a>
+        
+        <div class="workout-container">
+            <div class="day-btn-container"></div>
+            <div class="workout"></div>
+        </div>
+
+        <div class="edit-workout">
+            <p><input id="edit-sets" type="number" required /> x <input id="edit-reps" type="number" required /></p>
+            <p><input id="edit-weight" type="number" required /> kg</p>
+            <p><button id="edit-confirm" class="confirm-btn">Confirm</button><button id="edit-cancel" class="confirm-btn">Cancel</button></p> 
+        </div>
+
+        <div class="center">
+            <a class="a-btn" id="workout-link" href="#"><span id="link-text">Add to</span> your workout</a>
+            <button class="a-btn" id="delete-all-btn" type="button">Delete workout</button>
+        </div>
+
+        <dialog class="center">
+            <p>Delete <span id="exercise-workout">exercise</span>?</p>
+            <div>
+                <button id="delete-confirm" class="confirm-btn">
+                    Confirm
+                </button>
+                <button id="delete-cancel" class="confirm-btn">
+                    Cancel
+                </button>
+            </div>
+        </dialog>
+
+    </div>
+    <footer class="footer">
+        <p>Made by <a class="contact" href="https://github.com/luisclaudioc">@luiscostantin</a></p>
+    </footer>
+    
+    <script type="module">
+        import { 
+            getAllExercises, 
+            editExercise,
+            deleteExercise, 
+            deleteAllExercises, 
+        } from '/client/services/api.js'
+
+        
+        // VARIABLES AND DATA
+        // Get user ID from query
+        const userId = window.location.search.split('&')[0].split('=')[1];
+
+        // Get elements from HTML
+        const workoutContainer = document.querySelector(".workout-container");
+        const dayBtnContainer = document.querySelector(".day-btn-container");
+        const deleteAllBtn = document.getElementById("delete-all-btn");
+        const linkTextSpan = document.getElementById("link-text");
+        const workout = document.querySelector(".workout");
+        const editWorkout = document.querySelector(".edit-workout")
+        const editSets = document.getElementById("edit-sets");
+        const editReps = document.getElementById("edit-reps");
+        const editweight = document.getElementById("edit-weight");
+        const editObs = document.getElementById("edit-obs");
+        const mainContainer = document.querySelector(".main-container");
+        const dialog = document.querySelector("dialog");
+        const deleteConfirm = document.getElementById("delete-confirm");
+        const deleteCancel = document.getElementById("delete-cancel");
+        const exerciseOrWorkout = document.getElementById("exercise-workout");
+        
+        // Get and organize workout data from DB
+        const workoutData = await getAllExercises(userId);
+        let currentExercise = {};
+        let currentDay = localStorage.getItem(userId) || "A";
+
+
+        // FUNCTIONS
+        // Render workout plan function
+        const renderWorkout = (day) => {
+
+            // Reset 
+            workout.innerHTML = '';
+            document.querySelectorAll('.day-btn').forEach((btn) => {
+                if (btn.innerText !== currentDay) {
+                    btn.classList.remove("active");
+                }
+            })
+
+            // Filter data by day
+            const filteredData = workoutData.filter((item => item.day === day)).sort((a, b) => a.group.localeCompare(b.group));
+
+            // Render data
+            filteredData.forEach((item) => {
+                const exercise = document.createElement('div');
+                exercise.id = item._id;
+                exercise.classList.add('exercise');
+                exercise.innerHTML = `
+                    <div>
+                        <h2>${item.group} | ${item.exercise}</h2>
+                        <p>${item.sets}x${item.repetitions} - ${item.weight}kg ${item.obs ? "(" + item.obs + ")" : ""}</p>
+                    </div>
+                    <div>
+                        <button class="edit-btn">&#9998</button>
+                        <button class="delete-btn">&#9746</button>
+                    </div>
+                    
+                `
+                workout.appendChild(exercise);
+            });
+        }
+        
+        // Check if there is workout data
+        if (workoutData.length) {
+            // Fill day button container
+            const days = [...new Set(workoutData.map(item => item.day))].sort();
+            days.forEach((day) => {
+                const dayBtn = document.createElement('button');
+                dayBtn.classList.add('day-btn', 'active');
+                dayBtn.innerText = day;
+                dayBtnContainer.appendChild(dayBtn);
+            });
+            // Fill workout container
+            renderWorkout(currentDay);
+        } else {
+            // Fill no workout container
+            workoutContainer.innerHTML = `<p>You dont have a workout plan yet.</p><br>`;
+            deleteAllBtn.style.display = "none";
+            linkTextSpan.innerText = "Create";
+        }
+
+        
+        // EVENT LISTENERS
+        // Day buttons listeners
+        document.querySelectorAll('.day-btn').forEach((btn) => {
+            btn.addEventListener("click", () => {
+                // Get day and restore it localy for reopen or refresh
+                currentDay = btn.innerText;
+                localStorage.setItem(userId, currentDay);
+                renderWorkout(currentDay);
+                btn.classList.add("active");
+                activateBtns();
+            })
+        });
+
+        // Edit and delete exercise listener
+        const activateBtns = () => {
+            // Delete button
+            document.querySelectorAll('.delete-btn').forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    // Get exercise info
+                    currentExercise = workoutData.filter((item => item._id === btn.parentElement.parentElement.id))[0];
+
+                    // Change Span text
+                    exerciseOrWorkout.innerText = "exercise";
+
+                    dialog.showModal();
+                });
+            });
+
+            // Edit button
+            document.querySelectorAll('.edit-btn').forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    // Show edit container in the right place
+                    editWorkout.style.display = "flex";
+                    workout.insertBefore(editWorkout, btn.parentElement.parentElement.nextSibling);
+                    
+                    // Get the exercise info
+                    currentExercise = workoutData.filter((item => item._id === btn.parentElement.parentElement.id))[0];
+                    
+                    // Render the info
+                    editSets.value = currentExercise.sets;
+                    editReps.value = currentExercise.repetitions;
+                    editweight.value = currentExercise.weight;
+                });
+            });
+        }
+        activateBtns();
+
+        // Confirm edit
+        document.getElementById("edit-confirm").addEventListener("click", async () => {
+            // Get info from input
+            const exercise = currentExercise;
+            exercise.sets = editSets.value;
+            exercise.repetitions = editReps.value;
+            exercise.weight = editweight.value;
+
+            // Change on DB
+            await editExercise(exercise);
+
+            // Hide edit container and refresh page
+            editWorkout.style.display = "none";
+            window.location.reload();
+        });
+
+        // Cancel edit
+        document.getElementById("edit-cancel").addEventListener("click", () => {
+            // Hide edit Container
+            editWorkout.style.display = "none";
+        });
+        
+        // Delete all exercises listener
+        deleteAllBtn.addEventListener("click", async () => {
+            exerciseOrWorkout.innerText = "workout";
+            dialog.showModal()
+        });
+
+        // Cancel delete
+        deleteCancel.addEventListener("click", () => {
+            dialog.close();
+        });
+
+        // Confirm delete
+        deleteConfirm.addEventListener("click", async () => {
+            if (exerciseOrWorkout.innerText === "workout") {
+                // Delete all exercises from DB and refresh page
+                await deleteAllExercises(userId);
+            } else {
+                // Delete one exercise from DB and refresh page
+                await deleteExercise(currentExercise._id);
+            }
+            dialog.close();
+            window.location.reload();
+        });
+
+        // Connect create tag to workout page with query
+        document.getElementById('workout-link').setAttribute('href', `/workout?user=${userId}`);
+    </script>
+    
+</body>
+</html>

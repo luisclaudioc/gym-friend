@@ -1,0 +1,242 @@
+:root {
+    --dark-blue: #01002d;
+    --light-grey: #b7babc76;
+    --black: #000000;
+    --blue: #378ec8;
+    --bright-blue: #32bdfe;
+    --border: solid 1px black;
+    --bright-border: solid 4px var(--blue);
+}
+  
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
+}
+
+header, .footer {
+    z-index: 1;
+    text-align: center;
+    width: 100%;
+    color: var(--dark-blue);
+}
+
+.contact {
+    color: var(--blue);
+}
+
+.contact:hover {
+    color: var(--bright-blue);
+}
+
+body {
+    color: white;
+    background-color: var(--light-grey);
+}
+
+header {
+    background-color: var(--blue);
+    background-image: linear-gradient(var(--bright-blue), var(--blue));
+    border-radius: 0 0 7px 7px;
+    position: sticky;
+    top: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+}
+
+.main-container {
+    position: absolute;
+    background-color: var(--dark-blue);
+    width: 370px;
+    height: 520px;
+    border: var(--bright-border);
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+}
+
+.a-btn, .submit-btn {
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+    color: var(--dark-blue);
+    background-color: var(--blue);
+    background-image: linear-gradient(var(--bright-blue), var(--blue));
+    padding: 6px;
+    border: var(--border);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+h1, p {
+    padding: 10px;
+}
+
+h2 {
+    font-size: 20px;
+    padding: 10px;
+}
+
+.login-register {
+    width: 100%;
+    position: absolute;
+    padding: 20px;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 5px;
+    margin: auto;
+}
+
+form label {
+    font-size: 15px;
+    margin: 5px;
+}
+
+form input {
+    font-size: 15px;
+}
+
+.link {
+    color: var(--bright-blue);
+    cursor: pointer;
+}
+
+.link:hover {
+    color: white;
+}
+
+.logout {
+    position: absolute;
+    right: 7px;
+    top: 65px;
+    font-size: 15px;
+}
+
+.day-btn-container {
+    margin-left: 3px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.day-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: var(--blue);
+    font-weight: 750;
+    font-size: 20px;
+    padding: 0 10px;
+    border: solid 0.1px var(--light-grey);
+    color: white;
+}
+
+.active {
+    background-color: var(--bright-blue);
+}
+
+.exercise {
+    background-color: var(--light-grey);
+    margin: 3px;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.exercise p, .exercise h2, .edit-workout p, .edit-workout h2 {
+    margin-left: 2px;
+    padding: 2px;
+}
+
+.exercise h2 {
+    color: var(--bright-blue)
+}
+
+.edit-btn, .delete-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-size: 20px;
+    color: var(--dark-blue)
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    transform: scale(1.2);
+}
+
+.complete-exercise {
+   display: flex;
+   flex-direction: column;
+   background-color: var(--light-grey);
+   padding: 10px;
+   margin-bottom: 3px;
+}
+
+.complete-exercise div {
+    display: flex;
+    padding-right: 5px;
+    align-items: center;
+}
+
+.complete-exercise input {
+    width: 1px;
+    flex: 1;
+}
+
+.edit-workout {
+    padding: 5px;
+    margin: 3px;
+    background-color: var(--blue);
+    display: none;
+    justify-content: space-around;
+}
+
+.edit-workout input {
+    width: 35px;
+}
+
+.edit-workout p:last-of-type input:last-of-type {
+    width: 50px;
+}
+
+.confirm-btn {
+    background-color: var(--light-grey);
+    color: var(--white);
+    border: solid 0.5px white;
+    padding: 2px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+dialog {
+    font-size: 25px;
+    padding: 10px;
+    padding-bottom: 23px;
+    color: white;
+    background-color: var(--dark-blue);
+    border: solid 0.5px red;
+    border-radius: 5px;
+}
