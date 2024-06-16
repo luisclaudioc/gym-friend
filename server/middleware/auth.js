@@ -46,7 +46,7 @@ module.exports = (app) => {
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
 
-    app.post('/login', passport.authenticate('local', { failureRedirect: '/' }), (req, res) => {
+    app.post('/login', passport.authenticate('local', { failureRedirect: '/', failureMessage: true }), (req, res) => {
         res.redirect('/profile?user=' + req.user._id);
     });
 
@@ -91,8 +91,8 @@ module.exports = (app) => {
         }
     });
 
-    app.get('/logout', function(req, res, next) {
-        req.logout(function(err) {
+    app.get('/logout', (req, res, next) => {
+        req.logout((err) => {
             if (err) { 
                 return next(err); 
             }

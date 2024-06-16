@@ -55,6 +55,11 @@ footer {
     right: 0;
 }
 
+img {
+    display: none;
+    border-radius: 50%;
+}
+
 .main-container {
     position: absolute;
     background-color: var(--dark-blue);
