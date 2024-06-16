@@ -22,7 +22,7 @@ After many years using iPhone's notes to write down my workout plan (exercise na
 - Improve and modernize interface
 
 ## Preview
-![alt text](https://github.com/jaredhanson/passport-local/assets/140541760/00c18a2f-3428-4849-b3ab-8037e2d0a487)
+![alt text](https://github.com/luisclaudioc/gym-friend/assets/140541760/701438c6-90d8-4913-9657-189c52a69ce6)
 
 ## Acknowledgements
 This is my first Fullstack project, completely idealised and written by me. Any contribution or feedback is welcome. 
