@@ -1,6 +1,7 @@
 import axios from 'https://cdn.skypack.dev/axios';
 
-const API_URL = "http://localhost:3000/api";
+//const API_URL = "http://localhost:3000/api";
+const API_URL = "https://gymbo.onrender.com/api"
 
 export const getAllExercises = async (userId) => {
   return axios.get(`${API_URL}/exercises`, {
