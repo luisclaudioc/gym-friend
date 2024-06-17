@@ -87,6 +87,7 @@
                     item.disabled = true;
                 });
                 await newExercise(userId, userData);
+                console.log(userData);
                 
                 // New input line
                 count++;
@@ -97,14 +98,14 @@
                     <div>
                         <label for="day-${count}">Day:</label>
                         <select id="day-${count}" name="day" required>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
+                            <option value="A" ${userData["day"] === "A" ? "selected" : ""}>A</option>
+                            <option value="B" ${userData["day"] === "B" ? "selected" : ""}>B</option>
+                            <option value="C" ${userData["day"] === "C" ? "selected" : ""}>C</option>
+                            <option value="D" ${userData["day"] === "D" ? "selected" : ""}>D</option>
+                            <option value="E" ${userData["day"] === "E" ? "selected" : ""}>E</option>
                         </select>
                         <label for="group-${count}">Muscle group:</label>
-                        <input id="group-${count}" name="group" type="text" required />
+                        <input id="group-${count}" name="group" value=${userData["group"]} type="text" required />
                     </div>
                     <div>
                         <label for="exercise-${count}">Exercise:</label>
